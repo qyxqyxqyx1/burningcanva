@@ -128,13 +128,13 @@ void Game::gamelevel_buttons()
 
 void Game::gamelevel_rules()
 {
-	settextstyle(20, 0, _T("宋体"));//需要更改下字体
-	outtextxy(20, 200, _T("规则如下："));
-	outtextxy(20, 220, _T("1.每个的数字代表该层颜料的层数"));
-	outtextxy(20, 240, _T("加热：当颜料层数>1时，该层颜料向下流动，覆盖下层，"));
-	outtextxy(20, 260, _T("所有颜料层数相应改变;当颜料层数=1时，"));
-	outtextxy(20, 280, _T("该层颜料不再流动"));
-	outtextxy(20, 300, _T("你的目标：复原目标画布！！！"));
+	settextstyle(20, 0, _T("微软雅黑"));//需要更改下字体
+	outtextxy(20, 20, _T("规则如下："));
+	outtextxy(20, 40, _T("1.每个的数字代表该层颜料的层数"));
+	outtextxy(20, 60, _T("2.加热：当颜料层数>1时，该层颜料向下流动，覆盖下层，"));
+	outtextxy(20, 80, _T("所有颜料层数相应改变;当颜料层数=1时，"));
+	outtextxy(20, 100, _T("该层颜料不再流动"));
+	outtextxy(20, 120, _T("你的目标：复原目标画布"));
 }
 
 void Game::do_gamelevel()
@@ -686,8 +686,8 @@ void Game::base_create()
 	settextstyle(20, 0, _T("宋体"));
 	outtextxy(20, 200, _T("你可以做的"));
 	outtextxy(20, 220, _T("1.你可以选择自己喜欢的颜色和数字"));
-	outtextxy(20, 240, _T("2.你可以画出自己想要的目标画布"));
-	outtextxy(20, 260, _T("3.我们可以为你生成一个相对简单的题目"));
+	outtextxy(20, 240, _T("2.你可以画出自己想要的操作画布"));
+	outtextxy(20, 260, _T("3.我们可以为你生成一个相对没美观的目标画布"));
 	outtextxy(20, 280, _T("您创造的题目将会加入到我们的题库当中"));
     setbkmode(TRANSPARENT);
 	TCHAR ss1[50] = L"简单模式";
