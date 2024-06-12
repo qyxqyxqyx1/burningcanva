@@ -165,7 +165,7 @@ size_t HashTable::get_currentsize()
 }
 void HashTable::update()
 {
-	std::fstream updateacc("account.txt", std::ios::out);
+	std::fstream updateacc("account.txt", std::ios::app);
 	for (int i = 0; i < get_arraysize(); i++)
 	{
 		if (hasharray[i].info == ACTIVE)

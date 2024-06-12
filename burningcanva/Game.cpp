@@ -635,9 +635,9 @@ int Game::get_selectq() { return this->selectq; }
 void Game::calculate()
 {
 	calculate(4);
-	//calculate(6);
-	//calculate(8);
-	//calculate(12);
+	calculate(6);
+	calculate(8);
+	calculate(12);
 }
 
 void Game::calculate(int size)
@@ -839,9 +839,8 @@ bool Game::checkcreate()
 
 void Game::accountcalculate()
 {
-	std::fstream foracc("account.txt",std::ios::in);
+	std::fstream foracc("account.txt",std::ios::in|std::ios::app);
 	std::string line;
-	if (getline(foracc, line)) return;
 	while (getline(foracc, line))
 	{
 		std::string sub1, sub2, sub3, sub4,sub5,sub6,sub7,sub8,sub9;
