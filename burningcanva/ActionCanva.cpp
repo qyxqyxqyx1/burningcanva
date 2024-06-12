@@ -334,6 +334,7 @@ Grid* ActionCanva::randcreate_q()//随机生成题目
 	}
 	forans << '\n';
 	forans.close();
+	//生成题目成功后的操作仍需要debug
 	Grid temp[12 * 12];//存储生成的目标
 	for (int i = 0; i < l; i++)
 	{

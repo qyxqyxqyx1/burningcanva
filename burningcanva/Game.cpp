@@ -267,6 +267,7 @@ void Game::canva_drawplay()
 		else if (level == 8) qtotnumber[2]++, act.set_qnumber(qtotnumber[2]), tar.set_Questionnumber(qtotnumber[2]);
 		else if (level == 12) qtotnumber[3]++, act.set_qnumber(qtotnumber[3]), tar.set_Questionnumber(qtotnumber[3]);
 		tar.receive_canva(act.randcreate_q());//自动生成题目，并且将一起生成的答案传递给目标画布tar
+		std::fstream o("ttt.txt",std::ios::app);
 
 		//对应画布缺一个写入文件的代码
 		//此处缺一个更新题库数量
@@ -342,6 +343,8 @@ void Game::judge_gameplay()
 	}
 	if (sign == 1)
 	{
+		nowwon++;
+		nowtotal++;
 		//将当前更新的局数记录到后台
 		AccountManage.add_won(level, currentPlayer);
 		AccountManage.add_total(currentPlayer);
@@ -480,7 +483,7 @@ void  Game::game_create()
 
 	while (1)
 	{
-		int x, y;
+			int x, y;
 		if (MouseHit())
 		{
 			MOUSEMSG msg = GetMouseMsg();
@@ -488,20 +491,20 @@ void  Game::game_create()
 			y = msg.y;
 			if (msg.uMsg == WM_LBUTTONDOWN)
 			{
-				//set_button(900, 0, 100, 50, ss7);
-				//set_button(900, 75, 100, 50, ss8);
+			//set_button(900, 0, 100, 50, ss7);
+			//set_button(900, 75, 100, 50, ss8);
 				if (x >= 900 && x <= 1000 && y >= 0 && y <= 50)
-				{
+			{
 					setCurrentPage(PAGE_HOME);
 					break;
-				}
+			}
 				else if (x >= 900 && x <= 1000 && y >= 75 && y <= 125)
 				{
 					setCurrentPage(PAGE_LEVEL);
 					break;
-				}
-			}
 		}
+	}
+}
 	}
 }
 
@@ -704,6 +707,8 @@ void Game::base_create()
 	set_button(900, 0, 100, 50, ss7);
 	set_button(900, 75, 100, 50, ss8);
 
+	COLORREF colors[60] = { 0,245,255,78,238,148,0,139,69,238,238,0,
+					   238,173,14,255,106,106,255,127,0,255,20,147,255,187,255,0,0,128 };//10种颜色
 	COLORREF colortemp;
 	for (int i = 0; i < 11; i++)
 	{
@@ -719,6 +724,7 @@ void Game::create_input()
 {
 	while (create_submit == 0)
 	{
+		//难点：如何根据创造的题目生成?-->似乎已经解决，现在代码实现
 		int x, y;
 		if (MouseHit())
 		{
@@ -777,10 +783,10 @@ void Game::create_input()
 						fillrectangle(posj * 30 + 700, (posi + 1) * 30 + 500, (posj + 1) * 30 + 700, posi * 30 + 500);
 						forcreate[posi][posj].setGrid(WHITE, 1);
 						posj = size - 1, posi--;
-					}
+				}
 					else if (posj == 0 && posi == 0)
-					{
-						setfillcolor(WHITE);
+						{
+							setfillcolor(WHITE);
 						fillrectangle(700, 530, 730, 500);
 						forcreate[0][0].setGrid(WHITE, 1);
 						posj--, posi--;
@@ -800,8 +806,8 @@ void Game::create_input()
 					if (x >= 0 && x <= 30) colo = RGB(colors[0], colors[1], colors[2]);
 					else if (x >= 30 && x <= 60) colo = RGB(colors[3], colors[4], colors[5]);
 					else if (x >= 60 && x <= 90) colo = RGB(colors[6], colors[7], colors[8]);
-					else if (x >= 90 && x <= 120) colo = RGB(colors[9], colors[10], colors[11]);
-					else if (x >= 120 && x <= 150) colo = RGB(colors[12], colors[13], colors[14]);
+				    else if (x >= 90 && x <= 120) colo = RGB(colors[9], colors[10], colors[11]);
+				    else if (x >= 120 && x <= 150) colo = RGB(colors[12], colors[13], colors[14]);
 					else if (x >= 120 && x <= 150) colo = RGB(colors[12], colors[13], colors[14]);
 					else if (x >= 150 && x <= 180) colo = RGB(colors[15], colors[16], colors[17]);
 					else if (x >= 180 && x <= 210) colo = RGB(colors[18], colors[19], colors[20]);
@@ -819,6 +825,7 @@ void Game::create_input()
 				}
 			}
 		}
+		break;
 	}
 }
 
@@ -834,6 +841,7 @@ void Game::accountcalculate()
 {
 	std::fstream foracc("account.txt",std::ios::in);
 	std::string line;
+	if (getline(foracc, line)) return;
 	while (getline(foracc, line))
 	{
 		std::string sub1, sub2, sub3, sub4,sub5,sub6,sub7,sub8,sub9;
@@ -934,6 +942,9 @@ void Game::login()
 		if (AccountManage.contains(currentplayer))
 		{
 			HWND hnd = GetHWnd();
+			nowplayer = inname;
+			nowpwd = inpwd;
+			currentPlayer.set_account(0, inname, nowpwd,0);
 			//通过用户成功登录的密码和账户，在后台找到该用户信息，并记录在currentPlayer当中
 			currentPlayer = AccountManage.get_nowplayerinfo(currentplayer);
 			MessageBox(hnd, _T("Successful login! Now enjoy yourself in game"), _T("提示"), MB_OKCANCEL);
@@ -1080,6 +1091,7 @@ void Game::signup()
 					MessageBox(hnd, _T("Successful sign-up!Now enjoy your game!"), _T("提示"), MB_OKCANCEL);
 					setCurrentPage(PAGE_HOME);
 					//密码加密后再存储
+					//加密--->解密操作
 					break;
 				}
 				//	set_button(1100, 850, 130, 40, ss3);
