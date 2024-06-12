@@ -243,9 +243,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\burning picture\burning picture\bk.jpg">
-      <Filter>资源文件</Filter>
-    </Image>
     <Image Include="loss_game.gif">
       <Filter>资源文件</Filter>
     </Image>
@@ -253,12 +250,6 @@
       <Filter>资源文件</Filter>
     </Image>
     <Image Include="gdygplay.bmp">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="..\..\111.jpg">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="..\..\222.jpg">
       <Filter>资源文件</Filter>
     </Image>
     <Image Include="avatar1.jpg">
@@ -274,6 +265,12 @@
       <Filter>资源文件</Filter>
     </Image>
     <Image Include="defaultacatar.jpg">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="111.jpg">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="222.jpg">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>

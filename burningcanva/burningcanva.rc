@@ -50,12 +50,6 @@ END
 // JPG
 //
 
-IDR_JPG1                JPG                     "E:\\C++ʵѵ\\burning picture\\burning picture\\bk.jpg"
-
-IDR_JPG7                JPG                     "E:\\C++ʵѵ\\111.jpg"
-
-IDR_JPG8                JPG                     "E:\\C++ʵѵ\\222.jpg"
-
 IDR_JPG9                JPG                     "jpg9.bin"
 
 IDR_JPG10               JPG                     "jpg10.bin"
@@ -69,6 +63,10 @@ IDR_JPG13               JPG                     "avatar3.jpg"
 IDR_JPG14               JPG                     "avatar4.jpg"
 
 IDR_JPG15               JPG                     "defaultacatar.jpg"
+
+IDR_JPG16               JPG                     "111.jpg"
+
+IDR_JPG17               JPG                     "222.jpg"
 
 
 /////////////////////////////////////////////////////////////////////////////
