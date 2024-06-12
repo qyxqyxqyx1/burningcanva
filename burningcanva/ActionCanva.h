@@ -38,6 +38,7 @@ public:
     void reparam();
     void copyinit();
     void set_inithinnum();
+    void user_create();
 private:
     void copy_record(int size,int total);
     void reduce_hintnum(int level);
@@ -54,6 +55,7 @@ private:
     Grid hint1[12][12];
     Grid hint2[12][12];
     Grid record[12][12];//随机生成题目，记录最初的题目
+    Grid forcreate[12][12];
     //记录提示次数，不同难度提示次数不一样
     //easy模式：一次提示
     //middle模式：两次提示

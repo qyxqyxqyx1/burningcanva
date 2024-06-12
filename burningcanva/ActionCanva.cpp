@@ -160,8 +160,13 @@ void ActionCanva::copy_record(int size,int total)//total:totalburn==1,若要撤销到
 
 void ActionCanva::set_inithinnum()
 {
-	hintnumber[0] = 9, hintnumber[1] = 2,
-	hintnumber[2] = 3, hintnumber[3] = 5;
+	hintnumber[0] = 2, hintnumber[1] = 3,
+	hintnumber[2] = 4, hintnumber[3] = 5;
+}
+
+void ActionCanva::user_create()
+{
+
 }
 
 void ActionCanva::reduce_hintnum(int level)
@@ -329,7 +334,6 @@ Grid* ActionCanva::randcreate_q()//随机生成题目
 	}
 	forans << '\n';
 	forans.close();
-	//生成题目成功后的操作仍需要debug
 	Grid temp[12 * 12];//存储生成的目标
 	for (int i = 0; i < l; i++)
 	{

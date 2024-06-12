@@ -12,12 +12,16 @@ IMAGE ava1;
 IMAGE ava2;
 IMAGE ava3;
 IMAGE ava4;
+IMAGE deava;
 bool cmp(const Player&a,const Player& b)
 {
 	//排名公式:score=5%*easywon+10%*middlewon+15%*hardwon+70%*expertwon;
-	int score_a = 0.05 * a.woneasy + 0.1 * a.wonmiddle + 0.15 * a.wonhard + 0.7 * a.wonexpert;
-	int score_b = 0.05 * b.woneasy + 0.15 * b.wonmiddle + 0.15 * b.wonhard + 0.7 * b.wonexpert;
-	if (score_a>score_b) return score_a>score_b;
+	//int score_a = 0.05 * a.woneasy + 0.1 * a.wonmiddle + 0.15 * a.wonhard + 0.7 * a.wonexpert;
+	//int score_b = 0.05 * b.woneasy + 0.15 * b.wonmiddle + 0.15 * b.wonhard + 0.7 * b.wonexpert;
+	if (a.wonexpert != a.wonexpert) return a.wonexpert > b.wonexpert;
+	else if (a.wonhard != b.wonhard) return a.wonhard > b.wonhard;
+	else if (a.wonmiddle != b.wonmiddle) return a.wonmiddle > b.wonmiddle;
+	else if (a.woneasy != b.woneasy) return a.woneasy > b.woneasy;
 	//根据分数排序，然后这个积分不计入用户数据，而是计入了用户各难度玩的局数
 	else if (a.total != b.total) return a.total < b.total;
 	else return a.name < b.name;
@@ -185,6 +189,7 @@ void HashTable::forrank()
 	loadimage(&ava2, _T("avatar2.jpg"), 49, 49);
 	loadimage(&ava3, _T("avatar3.jpg"), 49, 49);
 	loadimage(&ava4, _T("avatar4.jpg"), 49, 49);
+	loadimage(&deava, _T("defaultacatar.jpg"), 49, 49);
 	Player tmp[100];//只显示前100名用户的成绩
 	int k = 0;
 	for (int i = 0; i < hasharray.size(); i++)
@@ -199,7 +204,7 @@ void HashTable::forrank()
 		}
 	}
 	//绘制表头
-	std::sort(tmp + 0, tmp + k, cmp);
+	std::sort(tmp + 0, tmp + k, cmp);//从大到小排
 	int left = 300, len = 100;
 	setlinecolor(BLACK);
 	for (int i = 0; i < 9; i++)
@@ -256,8 +261,9 @@ void HashTable::forrank()
 		chech << tmp[i].Avatar << std::endl;
 		if (tmp[i].Avatar == 1) putimage(351, 151 + i * 50, &ava1);
 		else if (tmp[i].Avatar == 2)putimage(351, 151 + i * 50, &ava2);
-		else if (tmp[i].Avatar == 3)putimage(351, 151+ i * 50, &ava3);
+		else if (tmp[i].Avatar == 3)putimage(351, 151 + i * 50, &ava3);
 		else if (tmp[i].Avatar == 4)putimage(351, 151 + i * 50, &ava4);
+		else if (tmp[i].Avatar == 0) putimage(351, 151 + i * 50, &deava);
 		setbkmode(TRANSPARENT);
 		outtextxy(540, 175 + i * 50, snum2);//easy
 		outtextxy(640, 175 + i * 50, snum3);//middle

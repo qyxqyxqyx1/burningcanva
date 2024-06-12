@@ -65,7 +65,11 @@ private:
 	void game_rank();
 	void chooseava();
 	void create_canvas_size();
+	void leftrotate();
+	void burning();
+	bool done();
 private:
+	Grid tmp[12][12];//存储了所有左旋之后的结果
 	int currentPage = PAGE_HOME;//默认为主页
 	ActionCanva act;//操作画布
 	TargetCanva tar;//目标画布
@@ -78,7 +82,7 @@ private:
 	int qtotnumber[4];
 	bool select;//记录用户是否选择创建题目
 	int posi, posj;//创建题目时的位置,i,j最大值是11
-	int size;
+	int size;//随即创造题目的大小
 	Grid forcreate[12][12];
 	bool select_mode;//创造题目时必须先选择题目
 	bool create_submit;//
@@ -88,6 +92,8 @@ private:
 	int nowtotal;
 	int newavarnum;//当前正在注册的用户选择的头像
 	Player currentPlayer;
-	bool satisfy;
+	bool satisfy; 
+	Grid temp1[12][12];
+	Grid temp2[12][12];
 };
 

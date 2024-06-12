@@ -25,6 +25,7 @@ Game::Game()
 	loadimage(&chava2, _T("avatar2.jpg"), 100, 100);
 	loadimage(&chava3, _T("avatar3.jpg"), 100, 100);
 	loadimage(&chava4, _T("avatar4.jpg"), 100, 100);
+	loadimage(&chdefaultava, _T("defaultacatar.jpg"), 100, 100);
 }
 
 void Game::game_controll()
@@ -266,7 +267,6 @@ void Game::canva_drawplay()
 		else if (level == 8) qtotnumber[2]++, act.set_qnumber(qtotnumber[2]), tar.set_Questionnumber(qtotnumber[2]);
 		else if (level == 12) qtotnumber[3]++, act.set_qnumber(qtotnumber[3]), tar.set_Questionnumber(qtotnumber[3]);
 		tar.receive_canva(act.randcreate_q());//自动生成题目，并且将一起生成的答案传递给目标画布tar
-		std::fstream o("ttt.txt",std::ios::app);
 
 		//对应画布缺一个写入文件的代码
 		//此处缺一个更新题库数量
@@ -346,13 +346,13 @@ void Game::judge_gameplay()
 		AccountManage.add_won(level, currentPlayer);
 		AccountManage.add_total(currentPlayer);
 		HWND hnd = GetHWnd();
-		MessageBox(hnd, _T("You Win!!!"), _T("提示"), MB_OKCANCEL);
+		MessageBox(hnd, _T("You Win:-)"), _T("提示"), MB_OKCANCEL);
 	}
 	else if (sign == 0)
 	{
 		AccountManage.add_total(currentPlayer);
 		HWND hnd = GetHWnd();
-		MessageBox(hnd, _T("You lose..."), _T("提示"), MB_OKCANCEL);
+		MessageBox(hnd, _T("You lose:-("), _T("提示"), MB_OKCANCEL);
 	}
 	//更新到文件当中
 	AccountManage.update();
@@ -397,7 +397,7 @@ void Game::re_game()
 	}
 }
 
-void Game::game_create()
+void  Game::game_create()
 {
 	//1.画图
 	base_create();
@@ -410,22 +410,96 @@ void Game::game_create()
 	posi = -1, posj = -1;
 	create_submit = 0;
 	satisfy = 0;
-	create_input();
+	create_input();//提交存储到actmode文件当中
+	if (size == 4) qtotnumber[0]++;
+	else if (size == 6) qtotnumber[1]++;
+	else if (size == 8) qtotnumber[2]++;
+	else if (size == 12) qtotnumber[3]++;
 
-	while (getCurrentPage() == PAGE_CREATE)//等待用户切换界面
+	//4.随机生成答案,存到hint当中
+	int x=-20;
+	std::fstream forans;//存答案用
+	if (size == 4) x=qtotnumber[0],forans.open("easyhint.txt", std::ios::app);
+	else if (size == 6) x = qtotnumber[1], forans.open("middlehint.txt", std::ios::app);
+	else if (size== 8) x = qtotnumber[2], forans.open("middlehint.txt", std::ios::app);
+	else if (size== 12) x = qtotnumber[3], forans.open("experthint.txt", std::ios::app);
+	if (!forans)
 	{
+		std::cerr << "File could not be opened" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+	forans << x << std::endl;//先存入题号
+
+	//2.题目加工得到答案
+	while (!done())//只要有不为1的，说明还需要加热
+	{
+		//将生成答案的过程(包括初始画布)存入文件当中
+		for (int i = 0; i < size; i++)
+		{
+			for (int j = 0; j < size; j++)
+			{
+				BYTE R = GetRValue(forcreate[i][j].getColor());
+				BYTE G = GetGValue(forcreate[i][j].getColor());
+				BYTE B = GetBValue(forcreate[i][j].getColor());
+				int r = static_cast<int>(R);
+				int g = static_cast<int>(G);
+				int b = static_cast<int>(B);
+				forans << r << ' ' << g << ' ' << b << ' ' << forcreate[i][j].getNumber() << std::endl;
+			}
+		}
+		forans << '\n';
+		int rnum = rand() % 3;
+		for (int i = 0; i < rnum; i++)
+			leftrotate();
+		burning();//对forcreate数组burning
+	}
+	std::fstream forbank;
+	if (size == 4) forbank.open("easyQuestionbank.txt", std::ios::app);
+	else if (size == 6) forbank.open("middleQuestionbank.txt", std::ios::app);
+	else if (size == 8) forbank.open("hardQuestionbank.txt", std::ios::app);
+	else if (size == 12) forbank.open("expertQuestionbank.txt", std::ios::app);
+	for (int i = 0; i < size; i++)
+	{
+		for (int j = 0; j < size; j++)
+		{
+			BYTE R = GetRValue(forcreate[i][j].getColor());
+			BYTE G = GetGValue(forcreate[i][j].getColor());
+			BYTE B = GetBValue(forcreate[i][j].getColor());
+			int r = static_cast<int>(R);
+			int g = static_cast<int>(G);
+			int b = static_cast<int>(B);
+			forans << r << ' ' << g << ' ' << b << ' ' << forcreate[i][j].getNumber() << std::endl;//最后一步答案不想存到QBank当中了...
+			forbank << r << ' ' << g << ' ' << b << std::endl;
+		}
+	}
+	forans << '\n';
+	forbank << '\n';
+	forans.close();
+	forbank.close();
+
+	while (1)
+	{
+		int x, y;
 		if (MouseHit())
 		{
-			int x, y;
 			MOUSEMSG msg = GetMouseMsg();
 			x = msg.x;
 			y = msg.y;
-			//set_button(900, 0, 100, 50, ss7);
-			//set_button(900, 75, 100, 50, ss8);
 			if (msg.uMsg == WM_LBUTTONDOWN)
 			{
-				if (x >= 900 && x <= 1000 && y >= 0 && y <= 50) setCurrentPage(PAGE_HOME);
-				else if (x >= 900 && x <= 1000 && y >= 75 && y <= 125) setCurrentPage(PAGE_GAME);
+				//set_button(900, 0, 100, 50, ss7);
+				//set_button(900, 75, 100, 50, ss8);
+				if (x >= 900 && x <= 1000 && y >= 0 && y <= 50)
+				{
+					setCurrentPage(PAGE_HOME);
+					break;
+				}
+				else if (x >= 900 && x <= 1000 && y >= 75 && y <= 125)
+				{
+					setCurrentPage(PAGE_LEVEL);
+					break;
+				}
 			}
 		}
 	}
@@ -549,9 +623,8 @@ void Game::keyEvent()//用户进行左旋，右旋，加热，撤销的操作
 
 void Game::set_selectq()
 {
-//	srand((unsigned)time(NULL));
-//	selectq = rand() % 1;
-	this->selectq = 0;
+	srand((unsigned)time(NULL));
+	selectq = rand() % 1;
 }
 
 int Game::get_selectq() { return this->selectq; }
@@ -559,9 +632,9 @@ int Game::get_selectq() { return this->selectq; }
 void Game::calculate()
 {
 	calculate(4);
-	calculate(6);
-	calculate(8);
-	calculate(12);
+	//calculate(6);
+	//calculate(8);
+	//calculate(12);
 }
 
 void Game::calculate(int size)
@@ -585,10 +658,10 @@ void Game::calculate(int size)
 		{
 			if (line.empty()) num++;
 		}
-		if (size == 4) qtotnumber[0] = num + 1;
-		else if (size == 6) qtotnumber[1] = num + 1;
-		else if (size == 8) qtotnumber[2] = num + 1;
-		else if (size == 12) qtotnumber[3] = num + 1;
+		if (size == 4) qtotnumber[0] = num;
+		else if (size == 6) qtotnumber[1] = num;
+		else if (size == 8) qtotnumber[2] = num;
+		else if (size == 12) qtotnumber[3] = num;
 	}
 	else
 	{
@@ -597,6 +670,7 @@ void Game::calculate(int size)
 		else if (size == 8) qtotnumber[2] = 0;
 		else if (size == 12) qtotnumber[3] = 0;
 	}
+	std::fstream omyg("ogmymymy.txt", std::ios::app);
 }
 
 void Game::base_create()
@@ -659,11 +733,10 @@ void Game::create_input()
 				if (x >= 0 && x <= 100 && y >= 800 && y <= 850 && checkcreate())
 				{
 					std::fstream openbank;
-					if (size == 4) openbank.open("easyQuestionbank.txt", std::ios::app);
-					else if (size == 6) openbank.open("middleQuestionbank.txt", std::ios::app);
-					else if (size == 8) openbank.open("hardQuestionbank.txt", std::ios::app);
-					else if (size == 12) openbank.open("expertQuestionbank.txt", std::ios::app);
-					openbank << '\n';
+					if (size == 4) openbank.open("easyactmode.txt", std::ios::app);
+					else if (size == 6) openbank.open("middleactmode.txt", std::ios::app);
+					else if (size == 8) openbank.open("hardactmode.txt", std::ios::app);
+					else if (size == 12) openbank.open("expertactmode.txt", std::ios::app);
 					for (int i = 0; i < size; i++)
 					{
 						for (int j = 0; j < size; j++)
@@ -674,12 +747,13 @@ void Game::create_input()
 							int r = static_cast<int>(R);
 							int g = static_cast<int>(G);
 							int b = static_cast<int>(B);
-							openbank << r << ' ' << g << ' ' << b << std::endl;
+							openbank << r << ' ' << g << ' ' << b <<' '<<forcreate[i][j].getNumber()<<std::endl;
 						}
 					}
 					HWND hnd = GetHWnd();
 					MessageBox(hnd, _T("Success submit :-)"), _T("提示"), MB_OKCANCEL);
 					create_submit = 1;
+					openbank << '\n';
 				}
 				//2.提交并失败
 				else if (x >= 0 && x <= 100 && y >= 800 && y <= 850 && !checkcreate())
@@ -715,6 +789,7 @@ void Game::create_input()
 				//4.选择了不同颜色，放到图当中
 				else if (y >= 400 && y <= 430)
 				{
+					int num;
 					if (posi == -1 && posj == -1) { posi++, posj++; }
 					else if (posi == 0 && posj == 0) posj++;
 					else if (posj != size - 1) posj++;
@@ -736,7 +811,11 @@ void Game::create_input()
 					else if (x >= 300 && x <= 330) colo = RGB(colors[30], colors[31], colors[32]);
 					setfillcolor(colo);
 					fillrectangle(posj * 30 + 700, (posi + 1) * 30 + 500, (posj + 1) * 30 + 700, posi * 30 + 500);
-					forcreate[posi][posj].setGrid(colo, 1);
+					if(size==4) num = rand() % 8+ 1;
+					else if(size==6)  num = rand() % 10 + 1;
+					else if (size == 8)  num = rand() % 13 + 1;
+					else if (size == 12)  num = rand() % 20 + 1;
+					forcreate[posi][posj].setGrid(colo, num);
 				}
 			}
 		}
@@ -1115,6 +1194,86 @@ void Game::create_canvas_size()
 					}
 					select_mode = 1;
 				}
+			}
+		}
+	}
+}
+
+void Game::leftrotate()
+{
+	for (int i = 0; i < size; i++)//列
+		for (int j = 0; j < size; j++)//行
+			tmp[i][j] = forcreate[j][size - 1 - i];
+
+	for (int i = 0; i < size; i++)
+	{
+		for (int j = 0; j < size; j++)
+		{
+			forcreate[i][j].setGrid(tmp[i][j].getColor(), tmp[i][j].getNumber());
+		}
+	}
+}
+
+bool Game::done()
+{
+	for (int i = 0; i < size; i++)
+		for (int j = 0; j < size; j++)
+			if (forcreate[i][j].getNumber() != 1)return 0;
+	return 1;
+}
+
+void Game::burning()
+{
+
+	for (int i = 0; i < size; i++)
+	{
+		for (int j = 0; j < size; j++)
+		{
+			temp2[i][j].setGrid(forcreate[i][j].getColor(), 0);
+		}
+	}
+	for (int i = 0; i < size; i++)
+	{
+		for (int j = 0; j < size; j++)
+		{
+			//temp1记录数字为1和>1的方格
+			//temp2记录需要被覆盖的方格
+			//temp2中，0表示没有被覆盖
+			if (forcreate[i][j].getNumber() == 1)
+			{
+				temp1[i][j].setGrid(forcreate[i][j].getColor(), 0);//temp1记录数字为1的方格
+			}
+			else if (forcreate[i][j].getNumber() > 1)
+			{
+				temp1[i][j].setGrid(forcreate[i][j].getColor(), 1);//temp1记录数字>1的方格(被加热了)
+				if (i != size - 1)
+				{
+					temp2[i + 1][j].setGrid(forcreate[i][j].getColor(), forcreate[i][j].getNumber() - 1);
+				}
+			}
+		}
+	}
+	//合并temp1和temp2数组
+	for (int i = 0; i < size; i++)
+	{
+		for (int j = 0; j < size; j++)
+		{
+
+			if (temp2[i][j].getNumber() != 0)//原颜料层被上层覆盖
+			{
+
+				forcreate[i][j].setGrid(temp2[i][j].getColor(), temp2[i][j].getNumber());
+			}
+			else if (temp1[i][j].getNumber() == 0)
+			{
+				//原颜料层为1且没有被上层覆盖：do nothing
+			   /*	gridArray[i][j].setGrid(gridArray[i][j].getColor(), 1);*/
+
+			}
+			else if (temp1[i][j].getNumber() == 1)
+			{
+				//原颜料层>1且没有被上层覆盖：
+				forcreate[i][j].setGrid(temp1[i][j].getColor(), 1);
 			}
 		}
 	}
