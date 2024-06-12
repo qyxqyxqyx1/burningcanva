@@ -190,7 +190,7 @@ void HashTable::forrank()
 	loadimage(&ava3, _T("avatar3.jpg"), 49, 49);
 	loadimage(&ava4, _T("avatar4.jpg"), 49, 49);
 	loadimage(&deava, _T("defaultacatar.jpg"), 49, 49);
-	Player tmp[100];//只显示前100名用户的成绩
+	Player tmp[10];//只显示前10名用户的成绩
 	int k = 0;
 	for (int i = 0; i < hasharray.size(); i++)
 	{
@@ -200,6 +200,7 @@ void HashTable::forrank()
 				hasharray[i].player1.password,hasharray[i].player1.Avatar,
 				hasharray[i].player1.woneasy,hasharray[i].player1.wonmiddle,hasharray[i].player1.wonhard,
 				hasharray[i].player1.wonexpert,hasharray[i].player1.total);
+			if (k == 9) break;
 			k++;
 		}
 	}

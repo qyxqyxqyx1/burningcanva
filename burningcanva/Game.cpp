@@ -707,8 +707,8 @@ void Game::base_create()
 	set_button(900, 0, 100, 50, ss7);
 	set_button(900, 75, 100, 50, ss8);
 
-	COLORREF colors[60] = { 0,245,255,78,238,148,0,139,69,238,238,0,
-					   238,173,14,255,106,106,255,127,0,255,20,147,255,187,255,0,0,128 };//10种颜色
+	COLORREF colors[60] = { 235,29,29,252,144,50,255,255,0,34,139,34,
+				   64,224,208,0,0,255,75,0,130,128,0,128,255,20,147,115,74,18,252,224,203 };
 	COLORREF colortemp;
 	for (int i = 0; i < 11; i++)
 	{
@@ -725,9 +725,11 @@ void Game::create_input()
 	while (create_submit == 0)
 	{
 		//难点：如何根据创造的题目生成?-->似乎已经解决，现在代码实现
-		int x, y;
 		if (MouseHit())
-		{
+		{	
+			int x, y;
+			std::fstream tryrrr("tryagain.txt", std::ios::app);
+			tryrrr << "this is a test" << std::endl;
 			MOUSEMSG msg = GetMouseMsg();
 			x = msg.x;
 			y = msg.y;
@@ -825,7 +827,6 @@ void Game::create_input()
 				}
 			}
 		}
-		break;
 	}
 }
 

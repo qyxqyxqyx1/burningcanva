@@ -49,7 +49,7 @@ public:
 	size_t get_arraysize();//总表大小
 	size_t get_currentsize();
 	void update();//更新文件
-	void forrank();
+	void forrank();//查看排名
 	void add_won(int level,Player& x);
 	void add_total(Player& x);
 private:
